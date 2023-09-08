@@ -40,7 +40,11 @@ while True:
     if not success:
         break
 
-    results = model(img, stream=True)
+    imgregion = cv2.bitwise_and(img, mask)
+
+    results = model(imgregion, stream=True)
+
+
 
     for r in results:
         boxes = r.boxes
@@ -68,6 +72,7 @@ while True:
                                offset=3)
 
     cv2.imshow("image", img)
-    cv2.waitKey(1)
+    cv2.imshow("imgregion",imgregion)
+    cv2.waitKey(0)
 
 
