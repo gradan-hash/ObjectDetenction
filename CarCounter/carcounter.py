@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 import math
 import cvzone
+from sort import *
 
 cap = cv2.VideoCapture("../videos/cars.mp4")
 
@@ -10,7 +11,7 @@ model = YOLO('../weights/yolov8n.pt')
 
 classNames = [
     "person", "cell phone", "suitcase", "hair", "refrigerator", "toothbrush",
-    "pen","motorbike", "pencil","bus", "car", "dog", "cat",
+    "pen", "motorbike", "pencil", "bus", "car", "dog", "cat",
     "chair", "table", "bottle", "book", "laptop",
     "keyboard", "mouse", "phone", "cup", "plate",
     "fork", "knife", "spoon", "watch", "hat",
@@ -31,8 +32,10 @@ classNames = [
     "hot dog", "pizza", "donut", "cake", "chair"
 ]
 
-
 mask = cv2.imread("../CarCounter/mask.png")
+
+# tracking
+tracker = Sort(max_ags=20, min_hits=3, iou_threshold=0.3)
 
 while True:
     success, img = cap.read()
@@ -43,8 +46,7 @@ while True:
     imgregion = cv2.bitwise_and(img, mask)
 
     results = model(imgregion, stream=True)
-
-
+    detections = np.empty((0, 5))
 
     for r in results:
         boxes = r.boxes
@@ -58,7 +60,6 @@ while True:
 
             # USING CVZONE MUCH ADVANCED AND MORE FEATURES
             w, h = x2 - x1, y2 - y1
-            cvzone.cornerRect(img, (x1, y1, w, h), l=9)
 
             # confidence
             confidence = math.ceil((box.conf[0] * 100)) / 100
@@ -67,12 +68,19 @@ while True:
             cls = int(box.cls[0])
             currentclass = classNames[cls]
 
-            if currentclass == "car" or currentclass == "truck"or currentclass == "train" or currentclass == "motorbike" and confidence > 0.45 :
+            if currentclass == "car" or currentclass == "truck" or currentclass == "train" or currentclass == "motorbike" and confidence > 0.45:
                 cvzone.putTextRect(img, f"{currentclass}{confidence}", (max(35, x1), max(35, y1)), scale=1, thickness=1,
-                               offset=3)
+                                   offset=3)
+                cvzone.cornerRect(img, (x1, y1, w, h), l=9)
+                currentarray = np.array([x1, y1, x2, y2, confidence])
+                detections = np.vstack((detections, currentarray))
+
+    results_for_tracker = tracker.update(detections)
+
+    for result in results_for_tracker:
+        x1, y1, x2, y2, Id = result
+        print(result)
 
     cv2.imshow("image", img)
-    cv2.imshow("imgregion",imgregion)
+    cv2.imshow("imgregion", imgregion)
     cv2.waitKey(0)
-
-
