@@ -4,9 +4,16 @@ import numpy as np
 import math
 import cvzone
 
-cap = cv2.VideoCapture(0)  #for webcam
-cap.set(3, 640)
-cap.set(4, 480)  # Adjust the resolution as needed
+#
+# cap = cv2.VideoCapture(0) #for webcam
+#
+# set(3, 640)
+# cap.set(4, 480)  # Adjust the resolution as needed
+
+
+# cap = cv2.VideoCapture("../videos/motorbikes.mp4") #for videos
+# cap = cv2.VideoCapture("../videos/cars.mp4")
+cap = cv2.VideoCapture("../videos/pedestrians.mp4")
 
 model = YOLO('../weights/yolov8n.pt')
 
@@ -61,7 +68,7 @@ while True:
             # class names
             cls = int(box.cls[0])
 
-            cvzone.putTextRect(img, f"{classNames[cls]}{confidence}", (max(0, x1), max(35, y1)), scale=1, thickness=1)
+            cvzone.putTextRect(img, f"{classNames[cls]}{confidence}", (x1, y1 - 10), scale=1, thickness=1)
 
     cv2.imshow("image", img)
     cv2.waitKey(1)
