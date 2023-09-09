@@ -5,7 +5,7 @@ import math
 import cvzone
 from sort import *
 
-cap = cv2.VideoCapture("../videos/cars.mp4")
+cap = cv2.VideoCapture("../videos/pedestrians.mp4")
 cap.set(3, 640)
 cap.set(4, 480)  # Adjust the resolution as needed
 
