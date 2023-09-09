@@ -5,7 +5,7 @@ import math
 import cvzone
 from sort import *
 
-cap = cv2.VideoCapture("../videos/pedestrians.mp4")
+cap = cv2.VideoCapture("../videos/peoplewalk.mp4")
 cap.set(3, 640)
 cap.set(4, 480)  # Adjust the resolution as needed
 
@@ -34,7 +34,7 @@ classNames = [
     "hot dog", "pizza", "donut", "cake", "chair"
 ]
 
-mask = cv2.imread("../CarCounter/mask.png")
+mask = cv2.imread("mask.png")
 
 # tracking
 tracker = Sort(max_age=20, min_hits=3, iou_threshold=0.3)
@@ -74,7 +74,7 @@ while True:
             cls = int(box.cls[0])
             currentclass = classNames[cls]
 
-            if (currentclass == "car" or currentclass == "truck" or currentclass == "train" or currentclass == "motorbike") and confidence > 0.45:
+            if (currentclass == "person") and confidence > 0.25:
                 # cvzone.putTextRect(img, f"{currentclass}{confidence}", (max(35, x1), max(35, y1)), scale=1, thickness=1,
                 #                    offset=3)
                 # cvzone.cornerRect(img, (x1, y1, w, h), l=9, rt=5)

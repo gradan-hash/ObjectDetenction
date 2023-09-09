@@ -34,7 +34,7 @@ classNames = [
     "hot dog", "pizza", "donut", "cake", "chair"
 ]
 
-mask = cv2.imread("../CarCounter/mask.png")
+mask = cv2.imread("../People Counter/mask.png")
 
 # tracking
 tracker = Sort(max_age=20, min_hits=3, iou_threshold=0.3)
